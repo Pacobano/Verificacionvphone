@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Seguimiento de Duchas de Emergencia</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <style>
+    body {
+  font-family: Calibri, Arial;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 3px solid #ccc;
+  border-radius: 30px;
+  background-color: #f7f7f7;
+}
+
+.header-container {
+  text-align: center;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.subtitle {
+  margin-top: 20px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.select,
+.textarea {
+  width: 90%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+}
+
+.checklist-item {
+  margin-bottom: 20px;
+}
+
+.checklist-item label {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.checklist-item input[type="checkbox"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checklist-item input[type="checkbox"] + .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 3px;
+}
+
+.checklist-item input[type="checkbox"]:checked + .checkmark {
+  background-color: #2196f3;
+}
+
+.checklist-item .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checklist-item input[type="checkbox"]:checked + .checkmark:after {
+  display: block;
+}
+
+.checklist-item .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+.summary-button {
+  display: block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.summary-button:hover {
+  background-color: #45a049;
+}
+.camera-button {
+  display: block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  position: relative;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.camera-button:hover {
+  background-color: #45a049;
+}
+    .header-container {
+      text-align: center;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .button-container button {
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-container">
+      <p>&nbsp;</p>
+      <h1><img src="https://th.bing.com/th/id/R.e560a4a38d8758a7447302a8d0ffe9ff?rik=3ITNb6aJsrQaUA&amp;pid=ImgRaw&amp;r=0" alt="" width="464" height="116"></h1>
+    </div>
+  <div class="container">
+    <h2 class="title">Seguimiento de Duchas de Emergencia</h2>
+    <form id="checklist-form">
+      <label for="operatorSelect" class="label">Operador:</label>
+      <select id="operatorSelect" class="select" name="operator">
+        <option value="Operador 1">Operador 1</option>
+        <option value="Operador 2">Operador 2</option>
+        <option value="Operador 3">Operador 3</option>
+        <option value="Operador 4">Operador 4</option>
+        <option value="Operador 5">Operador 5</option>
+        <!-- Agrega más opciones según sea necesario -->
+      </select>
+      <!-- Lista de Chequeo -->
+      <h3 class="subtitle">Lista de Chequeo:</h3>
+      <div id="checklist-container">
+        <!-- Los campos de la lista de chequeo se generarán aquí dinámicamente -->
+      </div>
+      <!-- Campo para acciones correctivas propuestas -->
+      <label for="actionsTextarea" class="label">Acciones correctivas propuestas:</label>
+      <textarea id="actionsTextarea" class="textarea" rows="4" cols="50" maxlength="1000"></textarea>
+      <!-- Botón para enviar el resumen por correo -->
+      <button type="button" class="summary-button" onclick="sendSummaryEmail()">Enviar Resumen por Correo</button>
+     <!-- Botón para habilitar la cámara y tomar fotografías -->
+      <button type="button" class="camera-button" id="cameraButton">Tomar Fotografía</button>
+      <img id="photo" class="photo" style="display: none;">
+    </form>
+  </div>
+  <script src="script.js">
+    const locations = [
+  {
+    name: "Cubeto bombas aceite",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+      // Agregar más elementos de la lista de chequeo según sea necesario
+    ]
+  },
+  {
+    name: "Cubeto bombas metanol",
+        checklist: [
+          "Operatividad de Duchas",
+          "Operatividad de Lavaojos",
+          "Operatividad de Botellas de Diphoterine",
+          "Acceso Despejado",
+          "Pictograma Visible",
+          "Iluminación",
+          // Agregar más elementos de la lista de chequeo para esta ubicación
+        ]
+  },
+  {
+    name: "Cubeto bombas metilato",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+      // Agregar más elementos de la lista de chequeo para esta ubicación
+    ]
+  },
+  {
+    name: "Cubeto bombas biodiesel",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+      // Agregar más elementos de la lista de chequeo para esta ubicación
+    ]
+  },
+  {
+    name: "Cubeto bombas sosa",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+    ]
+  },
+  {
+    name: "Cubeto bombas ácidos",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+    ]
+  },
+  {
+    name: "Planta baja refinería (600 P1C)",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+    ]
+  },
+  {
+    name: "1ª planta refinería (500 R1)",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "IIluminación",
+    ]
+  },
+  {
+    name: "2ª planta refinería (polipasto Trysil)",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+    ]
+  },
+  {
+    name: "Planta baja BIO (166 P8)",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+    ]
+  },
+  {
+    name: "Planta baja BIO (163 S1)",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+    ]
+  },
+  {
+    name: "1ª planta BIO (163 C1)",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "IIluminación",
+    ]
+  },
+  {
+    name: "1ª planta BIO (163 S2 A/B)",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "Iluminación",
+    ]
+  },
+  {
+    name: "Laboratorio",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "IIluminación",
+    ]
+  },
+  {
+    name: "EDARI",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "IIluminación",
+    ]
+  },
+  {
+    name: "Cubeto químicos APQ",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "IIluminación",
+    ]
+  },
+  {
+    name: "Arcón emergencia químicos",
+    checklist: [
+      "Operatividad de Duchas",
+      "Operatividad de Lavaojos",
+      "Operatividad de Botellas de Diphoterine",
+      "Acceso Despejado",
+      "Pictograma Visible",
+      "IIluminación",
+    ]
+  }
+  // Agrega más ubicaciones y elementos de la lista de chequeo aquí
+];
+const photo = document.querySelector('#photo');
+const cameraButton = document.querySelector('#cameraButton');
+
+cameraButton.addEventListener('click', async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+    photo.style.display = 'block';
+    photo.srcObject = stream;
+  } catch (error) {
+    console.error('Error al acceder a la cámara:', error);
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const checklistContainer = document.getElementById("checklist-container");
+  const form = document.getElementById("checklist-form");
+
+  // Generar campos de checkbox para cada ubicación y elemento de la lista de chequeo
+  locations.forEach((location, index) => {
+    const locationDiv = document.createElement("div");
+    locationDiv.innerHTML = `<h4>${location.name}</h4>`;
+    location.checklist.forEach((item) => {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "checklist-item";
+      itemDiv.innerHTML = `<label><input type="checkbox" name="location-${
+        index + 1
+      }-${item}" value="checked"><span class="checkmark"></span>${item}</label>`;
+      locationDiv.appendChild(itemDiv);
+    });
+    checklistContainer.appendChild(locationDiv);
+  });
+});
+function sendSummaryEmail() {
+  const operator = document.getElementById("operatorSelect").value;
+  const dateTime = new Date().toLocaleString();
+  const actions = document.getElementById("actionsTextarea").value;
+
+  // Construir el contenido del correo electrónico con la información ingresada
+  let emailContent = `Resumen de Revisión de Duchas de Emergencia\n\n`;
+  emailContent += `Nombre del operador: ${operator}\n`;
+  emailContent += `Fecha y hora de la inspección: ${dateTime}\n\n`;
+
+  // Recorrer las ubicaciones y obtener el estado de cada campo de la lista de chequeo
+  locations.forEach((location, index) => {
+    const itemsNotOk = [];
+    location.checklist.forEach((item) => {
+      const checkboxInput = document.querySelector(
+        `input[name="location-${index + 1}-${item}"]`
+      );
+      if (!checkboxInput.checked) {
+        itemsNotOk.push(item);
+      }
+    });
+
+    if (itemsNotOk.length > 0) {
+      emailContent += `${location.name}:\n`;
+      itemsNotOk.forEach((item) => {
+        emailContent += `${item}: NO OK\n`;
+      });
+      emailContent += `\n`;
+    }
+  });
+
+  // Agregar las acciones correctivas propuestas
+  emailContent += `Acciones correctivas propuestas:\n${actions}\n`;
+
+  // Abrir el cliente de correo predeterminado con los campos prellenados
+  const recipientEmails = [
+    "francisco.bano@masolgruppo.com",
+    "pedro.montero@masolgruppo.com",
+    "alberto.besada@masolgruppo.com",
+    "inmaculada.guzman@masolgruppo.com",
+    "pedro.barcelona@masolgruppo.com",
+    "lorenzo.ayala@masolgruppo.com",
+    "joseluis.galban@masolgruppo.com",
+    "simondavid.diaz@masolgruppo.com",
+    "francisco.leal@masolgruppo.com",
+    "francisco.mendez@masolgruppo.com",
+    "adolfo.celdran@masolgruppo.com",
+    "gaspar.nogales@masolgruppo.com",
+    "diego.manzanera@masolgruppo.com",
+    "juan.garcia@masolgruppo.com",
+    "juan.alcaraz@masolgruppo.com",
+    "fernando.moreno@masolgruppo.com"
+  ];
+  const emailSubject = `Revisión Duchas de Seguridad - ${dateTime} - Realizada por ${operator}`;
+  const mailtoLink = `mailto:${recipientEmails.join(",")}?subject=${encodeURIComponent(
+    emailSubject
+  )}&body=${encodeURIComponent(emailContent)}`;
+  window.location.href = mailtoLink;
+}
+  </script>
+</body>
+
+</html>
